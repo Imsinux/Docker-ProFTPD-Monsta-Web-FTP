@@ -39,6 +39,14 @@ chmod 600 config/ftpd.passwd
 This setup is designed for Monsta FTP to talk to the server locally.
 Logging In: When using Monsta FTP, set the Host to ftp_server.
 
+💾2. External Access (FileZilla / Remote)
+If you need to connect from a remote PC using an FTP Client (like FileZilla), you must set your Public IP.
+
+File to Edit: config/proftpd.conf
+
+Action: Uncomment the line and set your server's Public IP.
+MasqueradeAddress 123.45.67.89  <-- Replace with your Public Server IP
+
 
 👤 User Management : 
 We use a helper script located in scripts/manage_ftp.py to handle UID generation and folder creation automatically.

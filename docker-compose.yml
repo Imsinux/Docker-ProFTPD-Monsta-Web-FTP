@@ -1,0 +1,40 @@
+services:
+  proftpd:
+    build: .
+    container_name: ftp_server
+    restart: always
+    ports:
+      - "21:21"
+      - "60000-60100:60000-60100"
+    volumes:
+      - ./config/proftpd.conf:/etc/proftpd/proftpd.conf
+      - ./config/ftpd.passwd:/etc/proftpd/ftpd.passwd
+      - ./data:/home/ftp
+    networks:
+      - ftp_net
+
+  monsta_ftp:
+    image: php:7.4-apache
+    container_name: monsta_web
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./monsta:/var/www/html
+    entrypoint: >
+      bash -c "apt-get update && apt-get install -y unzip wget &&
+      if [ ! -f /var/www/html/index.php ]; then
+        echo 'Downloading Monsta FTP...';
+        wget -O /tmp/monsta.zip https://www.monstaftp.com/downloads/monsta_ftp_2.10.3_install.zip;
+        unzip /tmp/monsta.zip -d /var/www/html;
+        chown -R www-data:www-data /var/www/html;
+        mv /var/www/html/mftp/* /var/www/html/;
+        rm -rf /var/www/html/mftp;
+      fi;
+      docker-php-entrypoint apache2-foreground"
+    networks:
+      - ftp_net
+
+networks:
+  ftp_net:
+    driver: bridge

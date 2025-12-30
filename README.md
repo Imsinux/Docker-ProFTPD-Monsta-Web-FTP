@@ -101,8 +101,6 @@ Edit: config/proftpd.conf
 
 Setting: Enable Masquerade with your Public IP.
 
-Apache
-
 MasqueradeAddress 123.45.67.89  <-- Your VPS/Server IP
 Firewall: Open ports 21 and 60000-60100.
 
@@ -112,44 +110,32 @@ Forget manual config editing. Use the Python helper in /scripts.
 Add a User
 Generates a unique UID, adds to the auth DB, and builds directory structure.
 
-Bash
-
 cd scripts
 python3 manage_ftp.py add <username> '<password>'
 Delete a User
 Removes the user from the authentication database immediately.
 
-Bash
-
 cd scripts
 python3 manage_ftp.py del <username>
+
+
+
 🔧 Troubleshooting
-<details> <summary><strong>❌ Upload Failed: Unable to switch to passive mode</strong></summary>
+❌ Upload Failed: Unable to switch to passive 
 
 Cause: IP Mismatch. You are using an IP address to connect, but the server is expecting the Docker container name, or MasqueradeAddress is set incorrectly.
 
 Fix:
 
 If using Monsta Web: Set Host to ftp_server.
-
 Ensure MasqueradeAddress is commented out in proftpd.conf for web usage.
 
 docker restart ftp_server
 
-</details>
 
-<details> <summary><strong>🚫 Permission Denied inside Public folder</strong></summary>
-
+🚫 Permission Denied inside Public folder
 Cause: Host file permissions became misaligned (often happens if you move files manually as root).
 
 Fix: Run this "One-Liner" on your host machine to reset strict permissions:
 
-Bash
 
-# Reset all folder visibility, unlock Public, and lock Private
-find data -mindepth 1 -maxdepth 1 -type d -exec chmod 755 {} + && \
-find data -name "Public" -type d -exec chmod 777 {} + && \
-find data -name "Private" -type d -exec chmod 700 {} +
-</details>
-
-<p align="center"> <sub>Managed by <a href="#">YourName/Organization</a></sub> </p>
